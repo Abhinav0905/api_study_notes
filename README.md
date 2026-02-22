@@ -1,4 +1,4 @@
-# NERSC Interview Study Notes
+# Interview Study Notes
 
 This repo contains a single-page study guide with a clean, interview-focused theme. Open `index.html` in a browser to review.
 
