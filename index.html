@@ -1,0 +1,1119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NERSC API / Software Engineer Interview Notes</title>
+    <meta
+      name="description"
+      content="High-detail, glance-friendly interview notes for a Software/API Engineer interview with NERSC / UC Berkeley Lab."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="orb orb-a" aria-hidden="true"></div>
+    <div class="orb orb-b" aria-hidden="true"></div>
+    <div class="orb orb-c" aria-hidden="true"></div>
+
+    <header class="hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow">Interview Review Deck</p>
+        <h1>NERSC Software / API Engineer Study Notes</h1>
+        <p class="hero-lead">
+          Dense, glance-first notes for technical + behavioral prep. Optimized for quick revision on
+          API design, system design, RAG verification, transformers, and NERSC-specific talking
+          points.
+        </p>
+        <div class="chip-row" role="list" aria-label="Topic chips">
+          <span class="chip" role="listitem">API Contracts</span>
+          <span class="chip" role="listitem">System Design</span>
+          <span class="chip" role="listitem">RAG / Agents</span>
+          <span class="chip" role="listitem">Transformers</span>
+          <span class="chip" role="listitem">Behavioral Stories</span>
+          <span class="chip" role="listitem">NERSC API Review</span>
+        </div>
+      </div>
+
+      <div class="hero-stack">
+        <section class="hero-card searchable" data-search="tell me about yourself intro nersc motivation">
+          <div class="card-kicker">60s Intro</div>
+          <p>
+            I build production APIs and automation systems that improve reliability and user
+            productivity. Most recently, I worked on GenAI-powered platforms and API integrations at
+            scale (28K+ users, 99.9% uptime). I care about clear contracts, operational safety, and
+            systems that reduce manual effort. NERSC is compelling because it applies those skills to
+            infrastructure that directly enables scientific research.
+          </p>
+          <button class="ghost copy-btn" type="button" data-copy-target="intro-text">Copy Intro</button>
+          <textarea id="intro-text" class="visually-hidden" readonly>
+I build production APIs and automation systems that improve reliability and user productivity. Most recently, I worked on GenAI-powered platforms and API integrations at scale (28K+ users, 99.9% uptime). I care about clear contracts, operational safety, and systems that reduce manual effort. NERSC is compelling because it applies those skills to infrastructure that directly enables scientific research.
+          </textarea>
+        </section>
+
+        <section class="hero-card compact searchable" data-search="memorize resume metrics impact">
+          <div class="card-kicker">Numbers To Memorize</div>
+          <ul class="tight-list">
+            <li><strong>28K+</strong> users served</li>
+            <li><strong>99.9%</strong> uptime</li>
+            <li><strong>45%</strong> MTTR reduction</li>
+            <li><strong>$200K</strong> annual savings</li>
+            <li><strong>95%</strong> pipeline failure reduction</li>
+            <li><strong>10x</strong> faster triage</li>
+            <li><strong>832 hrs/year</strong> saved</li>
+            <li><strong>15M+</strong> parameter transformer built/trained</li>
+          </ul>
+        </section>
+      </div>
+    </header>
+
+    <div class="toolbar" aria-label="Page controls">
+      <div class="search-wrap">
+        <label for="search" class="visually-hidden">Search notes</label>
+        <input id="search" type="search" placeholder="Search notes: idempotency, RAG, FR/NFR, retry, SLURM..." />
+      </div>
+      <div class="toolbar-actions">
+        <button id="expandAll" type="button">Expand All</button>
+        <button id="collapseAll" type="button">Collapse All</button>
+        <button id="toggleDense" type="button">Dense Mode</button>
+      </div>
+      <p id="searchStatus" class="search-status" aria-live="polite">Showing all notes</p>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar" aria-label="Section navigation">
+        <nav class="side-nav">
+          <a href="#rapid">Rapid Review</a>
+          <a href="#positioning">Positioning</a>
+          <a href="#stories">STAR Stories</a>
+          <a href="#nersc">NERSC API Research</a>
+          <a href="#api">API Design Sheet</a>
+          <a href="#system">FR / NFR + System Design</a>
+          <a href="#rag">RAG + Agentic Verification</a>
+          <a href="#transformer">Transformer Quick Ref</a>
+          <a href="#practice">Practice Qs</a>
+          <a href="#final-check">Final Checklist</a>
+        </nav>
+
+        <section class="sidebar-card searchable" data-search="glance review order interview prep strategy">
+          <h2>Fast Review Order</h2>
+          <ol class="tight-list ordered">
+            <li>`Rapid Review`</li>
+            <li>`Positioning + Stories`</li>
+            <li>`API Design Sheet`</li>
+            <li>`FR/NFR + System Design`</li>
+            <li>`RAG + Transformer`</li>
+            <li>`Practice Qs + Final Checklist`</li>
+          </ol>
+        </section>
+
+        <section class="sidebar-card searchable" data-search="hpc gap no direct hpc experience answer">
+          <h2>Gap Bridge (HPC)</h2>
+          <p>
+            No direct HPC experience is acceptable if you frame transferable strengths: scalable API
+            systems, Linux/Python, reliability engineering, async workflows, and fast learning.
+          </p>
+          <p class="muted small">
+            Bridge statement: "I do not have direct HPC production experience yet, but I have built
+            distributed API systems at scale and I ramp quickly on new infra domains."
+          </p>
+        </section>
+      </aside>
+
+      <main class="content">
+        <section id="rapid" class="panel">
+          <div class="section-head">
+            <p class="eyebrow">Section 1</p>
+            <h2>Rapid Review Board</h2>
+            <p>High-signal points to review first before deeper details.</p>
+          </div>
+
+          <div class="cards two-col">
+            <article class="note-card searchable" data-search="why nersc role compelling mission scientific discovery">
+              <h3>Why This Role (30-45 sec)</h3>
+              <ul>
+                <li>Intersection of API/automation engineering + scientific infrastructure.</li>
+                <li>Mission-driven: your work enables researchers, not only internal business tools.</li>
+                <li>Strong fit with Python/API systems, reliability, integrations, and workflow orchestration.</li>
+                <li>Opportunity to learn HPC-specific domains (schedulers, quotas, scientific workflows).</li>
+              </ul>
+            </article>
+
+            <article class="note-card searchable" data-search="tell me about yourself concise answer template">
+              <h3>Tell Me About Yourself (Structure)</h3>
+              <ol>
+                <li>Present role + identity (API/AI software engineer).</li>
+                <li>Scope and impact (scale, uptime, metrics).</li>
+                <li>Relevant strengths (Python, APIs, integration, reliability).</li>
+                <li>Why NERSC now (mission + infra scale + scientific impact).</li>
+              </ol>
+            </article>
+
+            <article class="note-card searchable" data-search="if asked no hpc experience how to answer">
+              <h3>If They Ask: "No HPC Experience?"</h3>
+              <ul>
+                <li>Acknowledge directly without over-defending.</li>
+                <li>Map to similar complexity: distributed systems, long-running workflows, quotas, retries.</li>
+                <li>Show learning velocity with examples (PyTorch/transformer, FastAPI migration, LangGraph).</li>
+                <li>Mention specific ramp areas: SLURM basics, partitions, job lifecycle, filesystems.</li>
+              </ul>
+            </article>
+
+            <article class="note-card searchable" data-search="what to optimize in interview answers results metrics tradeoffs">
+              <h3>Answer Pattern That Works</h3>
+              <ul>
+                <li><strong>Problem</strong> → <strong>Design Choice</strong> → <strong>Tradeoff</strong> → <strong>Result</strong>.</li>
+                <li>Use numbers and operational impact.</li>
+                <li>Show failure handling and observability, not only happy path.</li>
+                <li>Connect back to researcher experience / reliability expectations.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="banner searchable" data-search="one line core narrative positioning strategy">
+            <p>
+              <strong>Core narrative:</strong> You are an API and automation engineer with production
+              reliability experience who wants to apply those strengths to scientific infrastructure,
+              while ramping fast on HPC-specific concepts.
+            </p>
+          </div>
+        </section>
+
+        <section id="positioning" class="panel">
+          <div class="section-head">
+            <p class="eyebrow">Section 2</p>
+            <h2>Positioning + Ready-Made Answers</h2>
+            <p>Short scripts you can adapt live without sounding memorized.</p>
+          </div>
+
+          <div class="cards two-col">
+            <details class="deep-card searchable" open data-search="tell me about yourself full answer">
+              <summary>Tell Me About Yourself (45-60 sec version)</summary>
+              <div class="deep-content">
+                <p>
+                  I am a software engineer focused on APIs, automation, and AI-enabled systems. Over
+                  the last 4+ years, I have built production services across enterprise platforms and
+                  integrations, including FastAPI-based services and workflow automation that improved
+                  reliability and reduced manual effort. In my recent work, I supported a platform used
+                  by 28K+ users and helped deliver 99.9% uptime, while improving operational outcomes
+                  like MTTR and support efficiency.
+                </p>
+                <p>
+                  What is distinctive about my background is the combination of engineering delivery and
+                  analytical depth. I started in analytics/supply-chain optimization, which made me very
+                  comfortable with operational constraints, data quality, and designing systems around
+                  real user workflows. I also build and study AI systems, including agentic workflows and
+                  a GPT-style transformer project, so I can speak both application and infrastructure.
+                </p>
+                <p>
+                  I am interested in NERSC because it is a chance to apply API and systems engineering to
+                  infrastructure that supports scientific discovery at national scale. That mission and
+                  technical complexity are the combination I am looking for.
+                </p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="why nersc why berkeley lab why this role answer">
+              <summary>Why NERSC / Berkeley Lab?</summary>
+              <div class="deep-content">
+                <ul>
+                  <li>Mission matters: infra work directly enables climate/energy/health research.</li>
+                  <li>Scale and reliability matter: APIs are part of critical researcher workflows.</li>
+                  <li>Collaborative environment: systems engineers + software engineers + domain scientists.</li>
+                  <li>Strong fit: API design, automation, integration, Python, operations mindset.</li>
+                  <li>Growth edge: ramping into HPC-specific scheduling and compute resource workflows.</li>
+                </ul>
+                <p class="muted">
+                  Interview phrasing: emphasize impact and alignment, not just "I want to learn HPC."
+                </p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="why leaving current role answer">
+              <summary>Why Are You Leaving Your Current Role?</summary>
+              <div class="deep-content">
+                <p>
+                  I have had a strong experience building impactful AI and automation products, and I am
+                  grateful for that. At this point, I want the next step to be more mission-driven and
+                  infrastructure-focused, where the systems I build enable external scientific users at a
+                  larger scale. NERSC is a strong fit for that shift.
+                </p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="no hpc experience answer direct honest">
+              <summary>How To Answer: "What is your HPC experience?"</summary>
+              <div class="deep-content">
+                <p><strong>Answer shape:</strong> honest gap + transferability + ramp plan.</p>
+                <ul>
+                  <li>Directly state no direct HPC production experience yet.</li>
+                  <li>Map to scale/reliability experience: APIs, async workflows, Linux/Python.</li>
+                  <li>Explain understanding of adjacent concepts: job lifecycle, quotas, retries, long-running tasks.</li>
+                  <li>State concrete ramp areas: SLURM basics, partitions, file staging, scheduler APIs.</li>
+                  <li>Use a learning-speed example (transformer project, stack migration, LangGraph adoption).</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section id="stories" class="panel">
+          <div class="section-head">
+            <p class="eyebrow">Section 3</p>
+            <h2>STAR Story Bank (Metric-Heavy)</h2>
+            <p>Pick 3-4 stories and reuse them across behavioral + technical questions.</p>
+          </div>
+
+          <div class="cards two-col">
+            <details class="deep-card searchable" open data-search="linkedin genai platform fastapi 28k users 99.9 uptime story">
+              <summary>Story 1: LinkedIn GenAI Productivity Platform (API + Reliability)</summary>
+              <div class="deep-content">
+                <p><strong>Use for:</strong> API design, scale, collaboration, reliability, user impact.</p>
+                <p><strong>Situation:</strong> Internal productivity/support workflows were slow and fragmented across systems.</p>
+                <p><strong>Task:</strong> Build API-driven integrations and GenAI-assisted workflows that improve throughput and reliability.</p>
+                <p><strong>Action:</strong> Designed/implemented FastAPI services and integrations; improved error handling, observability, and workflow orchestration; supported platform operations and rollout.</p>
+                <p><strong>Result:</strong> 28K+ users served, 99.9% uptime, measurable MTTR improvement (45%), strong adoption and operational efficiency gains.</p>
+                <p><strong>NERSC tie-in:</strong> Similar need for reliable APIs supporting user-critical workflows, with clear contracts and low operational surprise.</p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="rfxcel sap integration inventory sync idempotency 200k savings story">
+              <summary>Story 2: Inventory Sync / Enterprise Integration (Idempotency + Data Integrity)</summary>
+              <div class="deep-content">
+                <p><strong>Use for:</strong> idempotency, retries, enterprise auth, cross-system consistency.</p>
+                <p><strong>Situation:</strong> Inventory/order synchronization across systems caused reconciliation errors and operational cost.</p>
+                <p><strong>Task:</strong> Build robust API integration with safe retries and duplicate prevention.</p>
+                <p><strong>Action:</strong> Added strong validation, retry-safe flows, and duplicate/consistency protections; improved contract clarity between systems.</p>
+                <p><strong>Result:</strong> Reduced costly reconciliation issues, contributed to about $200K annual savings.</p>
+                <p><strong>NERSC tie-in:</strong> Same reliability principles apply to job submission and resource APIs where duplicate side effects are unacceptable.</p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="jira assistant langgraph agentic triage 10x faster 832 hours story">
+              <summary>Story 3: Jira Conversational Assistant (Agentic Workflow + Evaluation)</summary>
+              <div class="deep-content">
+                <p><strong>Use for:</strong> AI systems, agent orchestration, verification/evaluation, workflow design.</p>
+                <p><strong>Situation:</strong> Ticket triage was manual and slow (30-40 minutes per case), causing escalations.</p>
+                <p><strong>Task:</strong> Automate triage and risk assessment while maintaining quality.</p>
+                <p><strong>Action:</strong> Built an agentic workflow (LangGraph-style pattern) to interpret requests, classify risk, and trigger actions/assistance in a controlled pipeline.</p>
+                <p><strong>Result:</strong> Triage time reduced to ~3-4 minutes (10x), ~20 escalations/month prevented, ~832 hours/year saved.</p>
+                <p><strong>NERSC tie-in:</strong> Shows strength in workflow automation and evaluation loops where correctness matters.</p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="temporal workflow retries 95 percent pipeline failure reduction story">
+              <summary>Story 4: Workflow Orchestration + Retry Hardening (Temporal / Resilience)</summary>
+              <div class="deep-content">
+                <p><strong>Use for:</strong> retries, backoff, fault tolerance, async workflows, observability.</p>
+                <p><strong>Situation:</strong> Pipelines had unstable failure patterns and poor recovery behavior.</p>
+                <p><strong>Task:</strong> Reduce failure rate and make workflows self-healing.</p>
+                <p><strong>Action:</strong> Introduced structured retries, backoff strategy, timeout handling, and workflow-level failure visibility.</p>
+                <p><strong>Result:</strong> ~95% reduction in pipeline failures.</p>
+                <p><strong>NERSC tie-in:</strong> Very relevant to long-running scientific workflows and job orchestration systems.</p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="transformer from scratch pytorch self learning 15m parameters story">
+              <summary>Story 5: GPT-Style Transformer From Scratch (Learning Velocity + Depth)</summary>
+              <div class="deep-content">
+                <p><strong>Use for:</strong> learning new tech quickly, ML fundamentals, systems thinking.</p>
+                <p><strong>Situation:</strong> Wanted deeper understanding of transformer internals beyond API usage.</p>
+                <p><strong>Task:</strong> Implement and train a decoder-style transformer end-to-end on limited hardware.</p>
+                <p><strong>Action:</strong> Built tokenization/training loop, masked attention, optimization setup; used practical techniques like gradient accumulation and mixed precision.</p>
+                <p><strong>Result:</strong> Trained ~15M parameter model and gained first-principles understanding of transformer architecture.</p>
+                <p><strong>NERSC tie-in:</strong> Demonstrates strong technical curiosity and ability to ramp on compute-heavy systems concepts.</p>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section id="nersc" class="panel">
+          <div class="section-head">
+            <p class="eyebrow">Section 4</p>
+            <h2>NERSC Public API Research Notes (What To Extract + How To Use It)</h2>
+            <p>Use their public docs as a design reference and conversation starter.</p>
+          </div>
+
+          <div class="cards two-col">
+            <article class="note-card searchable" data-search="what to extract from public api docs endpoints auth versioning error response">
+              <h3>What To Extract From The Public API Docs</h3>
+              <ul>
+                <li>Resource model and endpoint naming patterns (`/api/vX.Y/...`).</li>
+                <li>Versioning style and how visible it is in URLs.</li>
+                <li>Authentication expectations (headers, tokens, scope patterns).</li>
+                <li>Schema shape for request/response payloads.</li>
+                <li>Status codes and error response conventions.</li>
+                <li>Long-running operations pattern: sync vs async semantics.</li>
+                <li>Pagination, filters, and query parameter style.</li>
+                <li>Timestamps, status enums, and operational metadata fields.</li>
+                <li>Rate limiting hints or `Retry-After` documentation.</li>
+                <li>Documentation quality: examples, discoverability, consistency.</li>
+              </ul>
+            </article>
+
+            <article class="note-card searchable" data-search="how to mention api docs in interview without sounding superficial">
+              <h3>How To Mention It In Interview</h3>
+              <p>
+                Mention you reviewed the public API docs to understand their resource patterns,
+                versioning, and operational semantics. Then connect that to how you design APIs:
+                contract-first models, safe retries, clear errors, and observability. Keep it about
+                engineering alignment, not flattery.
+              </p>
+              <p class="mono-inline">
+                Example: "I looked at the public API docs to understand endpoint conventions and
+                versioning style. It helped me see how you model operational state and API contracts."
+              </p>
+            </article>
+
+            <article class="note-card searchable" data-search="nersc domain terms hpc basics glossary slurm partition quota">
+              <h3>HPC / NERSC Terms To Be Ready For</h3>
+              <ul>
+                <li><strong>Job scheduler</strong> (likely SLURM): queueing, dispatch, priorities.</li>
+                <li><strong>Partition/queue</strong>: resource classes (debug, regular, GPU, etc.).</li>
+                <li><strong>Allocation/quota</strong>: resource limits per user/project.</li>
+                <li><strong>Batch job lifecycle</strong>: submitted → queued → running → completed/failed.</li>
+                <li><strong>Interactive vs batch</strong>: different API/workflow needs.</li>
+                <li><strong>File staging / output retrieval</strong>: practical API workflow concerns.</li>
+                <li><strong>Long-running operations</strong>: `202 Accepted`, polling, webhooks.</li>
+              </ul>
+            </article>
+
+            <article class="note-card searchable" data-search="nersc questions to ask team role projects doudna perlmutter spin">
+              <h3>Questions Triggered By Your API Review</h3>
+              <ul>
+                <li>Which APIs are most heavily used by researchers today?</li>
+                <li>What are common pain points in job submission/status workflows?</li>
+                <li>How do you balance user requests vs infrastructure hardening and debt reduction?</li>
+                <li>What changes are expected with newer systems/platforms (verify current roadmap names)?</li>
+                <li>How is success measured for API/platform work: latency, adoption, reduced support load?</li>
+              </ul>
+            </article>
+          </div>
+
+          <details class="deep-card searchable" data-search="nersc public api link reference">
+            <summary>Reference Link You Mentioned</summary>
+            <div class="deep-content">
+              <p>
+                Public API docs reference you found:
+                <a href="https://api.nersc.gov/api/v1.2/#/status/read_statuses_status_get" target="_blank" rel="noreferrer">NERSC API v1.2 status endpoint docs</a>
+              </p>
+              <p class="muted small">
+                Use it as a pattern review source. In the interview, avoid assuming undocumented behavior.
+              </p>
+            </div>
+          </details>
+        </section>
+
+        <section id="api" class="panel">
+          <div class="section-head">
+            <p class="eyebrow">Section 5</p>
+            <h2>API Design Master Sheet (Interview-Ready)</h2>
+            <p>Focus on contracts, reliability, safety, and operational clarity.</p>
+          </div>
+
+          <div class="banner searchable" data-search="api design one line summary">
+            <p>
+              <strong>Interview one-liner:</strong> "I design APIs as reliable contracts, not just
+              endpoints: clear schemas, safe retries, explicit errors, and operational visibility."
+            </p>
+          </div>
+
+          <div class="cards two-col">
+            <details class="deep-card searchable" open data-search="api contract openapi schema examples validation">
+              <summary>1. API Contract (The Foundation)</summary>
+              <div class="deep-content">
+                <p><strong>Definition:</strong> The explicit agreement between provider and consumer.</p>
+                <ul>
+                  <li>Endpoints, methods, request/response schemas, status codes.</li>
+                  <li>Validation rules, enum values, limits, auth requirements.</li>
+                  <li>Error payload structure and retry behavior guidance.</li>
+                  <li>Examples for success and failure cases.</li>
+                </ul>
+                <p><strong>Best practice:</strong> contract-first with OpenAPI + schema validation (Pydantic/JSON Schema).</p>
+                <p><strong>Interview line:</strong> "A strong contract reduces integration ambiguity and shifts errors left."</p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="workflow design sync async 202 accepted polling webhooks">
+              <summary>2. Workflow Design (Sync vs Async)</summary>
+              <div class="deep-content">
+                <p><strong>Rule of thumb:</strong> If it can take more than a few seconds, make it async.</p>
+                <ul>
+                  <li><strong>Sync:</strong> status reads, metadata lookups, lightweight validation.</li>
+                  <li><strong>Async:</strong> job submission, file staging, long-running orchestration.</li>
+                  <li>Return <code>202 Accepted</code> + `job_id` + `status_url` for long work.</li>
+                  <li>Use polling first (simple), then webhooks or streams if product needs demand it.</li>
+                </ul>
+                <p><strong>NERSC relevance:</strong> Job operations are naturally asynchronous.</p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="idempotency idempotency key duplicate prevention retries post put delete">
+              <summary>3. Idempotency (Reliability Under Retries)</summary>
+              <div class="deep-content">
+                <p><strong>Why it matters:</strong> network failures can cause clients to retry after the server already processed a request.</p>
+                <ul>
+                  <li>GET/PUT/DELETE are idempotent by HTTP semantics (if designed correctly).</li>
+                  <li>POST is not idempotent by default; add `Idempotency-Key` for side-effecting creates.</li>
+                  <li>Cache or persist results keyed by request identity for a bounded window (e.g., 24h).</li>
+                  <li>Use database constraints and conflict handling as a second line of defense.</li>
+                </ul>
+                <p><strong>Interview example:</strong> Duplicate-safe job submission / inventory sync.</p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="authentication authorization api key oauth jwt mtls scopes quotas">
+              <summary>4. Authentication + Authorization</summary>
+              <div class="deep-content">
+                <ul>
+                  <li><strong>API keys:</strong> simple service access; hash at rest; rotate regularly.</li>
+                  <li><strong>OAuth/JWT:</strong> user delegation, scopes, expiry, refresh flow.</li>
+                  <li><strong>mTLS:</strong> stronger service-to-service trust, often relevant in institutional/facility environments.</li>
+                  <li><strong>Authorization:</strong> role/scope checks and resource ownership checks on every request.</li>
+                  <li><strong>Quota checks:</strong> authn tells who; authz/quota tells what and how much.</li>
+                </ul>
+                <p><strong>Security posture:</strong> TLS everywhere, least privilege, audit logs, rate limiting.</p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="retry logic exponential backoff jitter 429 503 504 transient failures">
+              <summary>5. Retry Logic + Resilience</summary>
+              <div class="deep-content">
+                <p><strong>Retry only transient failures:</strong> network timeouts, <code>408</code>, <code>429</code>, <code>502/503/504</code>.</p>
+                <ul>
+                  <li>Use exponential backoff with jitter.</li>
+                  <li>Respect <code>Retry-After</code> headers.</li>
+                  <li>Cap retries (e.g., 3 attempts) and set total timeout budgets.</li>
+                  <li>Do not retry non-idempotent writes unless protected by idempotency keys.</li>
+                  <li>Instrument retry counts to catch hidden upstream instability.</li>
+                </ul>
+                <p><strong>Server-side counterpart:</strong> handle duplicate or repeated requests gracefully.</p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="error handling status codes request id actionable messages rfc7807">
+              <summary>6. Error Handling (Structured + Actionable)</summary>
+              <div class="deep-content">
+                <p><strong>Principle:</strong> error payloads should help the client recover or fix input.</p>
+                <ul>
+                  <li>Use consistent error schema (`error_code`, `message`, `details`, `request_id`, `timestamp`).</li>
+                  <li>Use correct status codes (`400/401/403/404/409/422/429/5xx`).</li>
+                  <li>Include field-level validation errors when possible.</li>
+                  <li>Never leak internals in 5xx responses; log details server-side.</li>
+                  <li>Return request IDs so support/debugging is fast.</li>
+                </ul>
+                <div class="code-block">
+                  <pre><code>{
+  "error_code": "quota_exceeded",
+  "message": "Requested 64 nodes exceeds project quota",
+  "request_id": "req_123",
+  "retry_after": 3600
+}</code></pre>
+                </div>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="versioning api v1 v2 deprecation sunset headers migration">
+              <summary>7. Versioning + Deprecation</summary>
+              <div class="deep-content">
+                <ul>
+                  <li>Start with explicit versioning from day 1 (`/api/v1/...`).</li>
+                  <li>Avoid breaking changes when additive changes are enough.</li>
+                  <li>For breaking changes, ship new version and maintain overlap period.</li>
+                  <li>Announce deprecation early and provide migration docs/examples.</li>
+                  <li>Use deprecation/sunset headers when possible.</li>
+                </ul>
+                <p><strong>Interview line:</strong> "Versioning is a product + ops strategy, not only a routing choice."</p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="rate limiting throttling token bucket sliding window redis tiers">
+              <summary>8. Rate Limiting + Quota Management</summary>
+              <div class="deep-content">
+                <ul>
+                  <li>Use token bucket for burst + steady-state control.</li>
+                  <li>Use Redis/sliding window for distributed API servers.</li>
+                  <li>Return `429 Too Many Requests` with `Retry-After` and limit headers.</li>
+                  <li>Differentiate interactive vs admin/bulk clients via tiers.</li>
+                  <li>For NERSC-like APIs, combine request-rate limits with compute/resource quotas.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="pagination filtering sorting cursor offset api list jobs">
+              <summary>9. Pagination, Filtering, Sorting</summary>
+              <div class="deep-content">
+                <ul>
+                  <li>Offset pagination is simple; cursor pagination scales better for large changing datasets.</li>
+                  <li>Document filter params and enums (`status=queued|running|failed`).</li>
+                  <li>Include pagination metadata (`next_cursor`, `has_more`, `limit`).</li>
+                  <li>Be explicit about default sort order to avoid confusion.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="observability monitoring logging metrics tracing request id health endpoint">
+              <summary>10. Observability + Operability</summary>
+              <div class="deep-content">
+                <ul>
+                  <li>Structured logs with request IDs and user context (where appropriate).</li>
+                  <li>Latency/error metrics (p50/p95/p99, error rates by endpoint).</li>
+                  <li>Tracing across API -> queue -> worker -> downstream scheduler.</li>
+                  <li>Health endpoints and dependency checks.</li>
+                  <li>Audit logs for sensitive operations (job submit/cancel/quota changes).</li>
+                </ul>
+                <p><strong>Operational question to expect:</strong> "How would you debug failed submissions at scale?"</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="table-wrap searchable" data-search="http status codes cheat sheet api interview">
+            <table>
+              <caption>HTTP Status Codes You Should Speak Confidently About</caption>
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Meaning</th>
+                  <th>Use in NERSC-like API</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>200</td><td>OK</td><td>Status reads, updates that return data</td></tr>
+                <tr><td>201</td><td>Created</td><td>Synchronous resource creation</td></tr>
+                <tr><td>202</td><td>Accepted</td><td>Async job submission started</td></tr>
+                <tr><td>204</td><td>No Content</td><td>Delete/cancel confirmation without body</td></tr>
+                <tr><td>400</td><td>Bad Request</td><td>Malformed request or basic validation issue</td></tr>
+                <tr><td>401</td><td>Unauthorized</td><td>Missing/invalid credentials</td></tr>
+                <tr><td>403</td><td>Forbidden</td><td>Authenticated but no permission/quota</td></tr>
+                <tr><td>404</td><td>Not Found</td><td>Unknown job/resource id</td></tr>
+                <tr><td>409</td><td>Conflict</td><td>Invalid state transition, duplicate/in-flight conflict</td></tr>
+                <tr><td>422</td><td>Unprocessable</td><td>Semantic validation issue</td></tr>
+                <tr><td>429</td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+                <tr><td>503</td><td>Service Unavailable</td><td>Scheduler/downstream unavailable</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="system" class="panel">
+          <div class="section-head">
+            <p class="eyebrow">Section 6</p>
+            <h2>Functional vs Non-Functional Requirements + System Design Flow</h2>
+            <p>Use this structure before drawing architecture.</p>
+          </div>
+
+          <div class="cards two-col">
+            <article class="note-card searchable" data-search="functional requirements definition what system does">
+              <h3>Functional Requirements (FR)</h3>
+              <p><strong>What the system does.</strong> Features and behaviors users can perform.</p>
+              <ul>
+                <li>Submit jobs with resources (nodes, time, partition, script).</li>
+                <li>Check job status and list historical jobs.</li>
+                <li>Cancel jobs or modify where allowed.</li>
+                <li>Enforce quotas and permissions.</li>
+                <li>Get notifications / outputs / logs.</li>
+              </ul>
+            </article>
+
+            <article class="note-card searchable" data-search="non functional requirements definition how well performance availability scalability security">
+              <h3>Non-Functional Requirements (NFR)</h3>
+              <p><strong>How well the system does it.</strong> Quality attributes and constraints.</p>
+              <ul>
+                <li>Performance: latency targets and throughput.</li>
+                <li>Availability: uptime SLO/SLA and maintenance tolerance.</li>
+                <li>Scalability: growth targets and horizontal scaling.</li>
+                <li>Security: auth, TLS, audit, compliance.</li>
+                <li>Reliability/Consistency: idempotency, data integrity, recovery.</li>
+              </ul>
+            </article>
+          </div>
+
+          <details class="deep-card searchable" open data-search="pass cures acronym nfr categories">
+            <summary>NFR Acronym: PASS CURES</summary>
+            <div class="deep-content">
+              <div class="chip-row">
+                <span class="chip chip-outline">Performance</span>
+                <span class="chip chip-outline">Availability</span>
+                <span class="chip chip-outline">Scalability</span>
+                <span class="chip chip-outline">Security</span>
+                <span class="chip chip-outline">Consistency</span>
+                <span class="chip chip-outline">Usability</span>
+                <span class="chip chip-outline">Reliability</span>
+                <span class="chip chip-outline">Extensibility</span>
+                <span class="chip chip-outline">Supportability</span>
+              </div>
+              <p class="muted">Use this list to avoid missing critical system qualities in interviews.</p>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="clarifying questions system design interview api job submission">
+            <summary>Clarifying Questions To Ask First (System Design Interview)</summary>
+            <div class="deep-content">
+              <ul>
+                <li>What job types are in scope: batch only, interactive, GPU, dependencies?</li>
+                <li>What operations are required: submit, status, cancel, requeue, logs, outputs?</li>
+                <li>How many users / jobs per day / peak submissions per minute?</li>
+                <li>Latency expectations for submit vs status reads?</li>
+                <li>What consistency is required for quota enforcement?</li>
+                <li>What auth/compliance constraints apply?</li>
+                <li>Should notifications be polling only, webhook, or streaming?</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="capacity estimation example 100k jobs day 10k users rps storage">
+            <summary>Capacity Estimation Example (Use as a Talking Template)</summary>
+            <div class="deep-content">
+              <p><strong>Assumptions:</strong> 10K active users, 100K jobs/day, 90-day retention, 5KB metadata/job.</p>
+              <ul>
+                <li><strong>Peak submissions:</strong> ~1,000/min ≈ 17 RPS</li>
+                <li><strong>Status queries:</strong> ~10x writes ≈ 170 RPS</li>
+                <li><strong>Total peak API load:</strong> ~200 RPS</li>
+                <li><strong>Stored jobs in 90 days:</strong> 9M</li>
+                <li><strong>Metadata storage:</strong> 9M × 5KB ≈ 45GB raw (plan ~100GB with indexes/overhead)</li>
+              </ul>
+              <p class="muted">These are reasonable interview assumptions if exact numbers are not provided.</p>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="architecture sketch system design api scheduler queue workers database redis">
+            <summary>Architecture Sketch (Driven by NFRs)</summary>
+            <div class="deep-content">
+              <ol>
+                <li>Load balancer -> stateless API servers.</li>
+                <li>Auth + rate-limit middleware (API key/OAuth/JWT, quotas).</li>
+                <li>Job metadata DB (write before dispatch for durability).</li>
+                <li>Queue/workflow engine for async submission and retries.</li>
+                <li>Scheduler integration worker(s) with backoff and observability.</li>
+                <li>Cache (Redis) for quotas/status hot reads where safe.</li>
+                <li>Monitoring/logging/tracing for supportability.</li>
+              </ol>
+              <p><strong>Key reliability principle:</strong> Persist intent first, then execute downstream side effects.</p>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="tradeoffs performance consistency availability cost security usability">
+            <summary>Common Tradeoffs To Discuss</summary>
+            <div class="deep-content">
+              <ul>
+                <li><strong>Performance vs consistency:</strong> read replicas improve status read latency but may be slightly stale.</li>
+                <li><strong>Availability vs cost:</strong> stronger HA/multi-region increases complexity and spend.</li>
+                <li><strong>Security vs usability:</strong> mTLS is strong but harder than API keys for many users.</li>
+                <li><strong>Simplicity vs feature depth:</strong> start with polling before webhooks/streams unless requirements demand it.</li>
+              </ul>
+            </div>
+          </details>
+
+          <div class="banner searchable" data-search="system design interview script start by clarifying requirements">
+            <p>
+              <strong>Interview opener:</strong> "Before I design, I want to clarify functional requirements
+              and non-functional constraints because the throughput, latency, and consistency requirements
+              will directly shape the architecture."
+            </p>
+          </div>
+        </section>
+
+        <section id="rag" class="panel">
+          <div class="section-head">
+            <p class="eyebrow">Section 7</p>
+            <h2>RAG + Agentic Verification (Your Doubts, Clarified)</h2>
+            <p>How retrieval, verification, retries, and evaluation fit together.</p>
+          </div>
+
+          <div class="cards two-col">
+            <article class="note-card searchable" data-search="embedding vectorization difference embed vector db">
+              <h3>Embedding vs Vectorization (Clear Definition)</h3>
+              <ul>
+                <li><strong>Embedding</strong> = process/model that converts text to numbers.</li>
+                <li><strong>Vector</strong> = output numeric representation (e.g., 384 dims).</li>
+                <li><strong>Vectorization</strong> = commonly used synonym for embedding process.</li>
+                <li><strong>Vector DB</strong> stores vectors + metadata and supports similarity search.</li>
+              </ul>
+              <div class="diagram mono">
+                Text -> Embedding Model -> Vector -> Vector Database
+              </div>
+            </article>
+
+            <article class="note-card searchable" data-search="why retrieved answer check if right answer verification hallucination">
+              <h3>Doubt 1: How/Why Do We Check If Retrieved/Generated Answer Is Right?</h3>
+              <ul>
+                <li>Retrieval returns <strong>candidate context</strong>, not guaranteed truth.</li>
+                <li>Generation can still hallucinate or overgeneralize from partial context.</li>
+                <li>Verification checks whether the generated answer is supported by retrieved evidence.</li>
+                <li>This is about <strong>faithfulness</strong> (supported by context), not absolute world truth.</li>
+              </ul>
+            </article>
+
+            <article class="note-card searchable" data-search="why go back to vector db retry retrieval query rewrite">
+              <h3>Doubt 2: Why Go Back To The Vector DB?</h3>
+              <ul>
+                <li>First retrieval may miss the best chunk due to phrasing mismatch.</li>
+                <li>Query rewrite changes the embedding and can retrieve better chunks.</li>
+                <li>You retry retrieval to improve evidence quality before regenerating.</li>
+                <li>Without new retrieval, repeating generation often repeats the same mistake.</li>
+              </ul>
+            </article>
+
+            <article class="note-card searchable" data-search="max retries how many iterations rag loop">
+              <h3>Doubt 3: How Many Times Should The Loop Run?</h3>
+              <ul>
+                <li>Typical bounded loop: <strong>2-3 iterations</strong>.</li>
+                <li>More loops increase latency/cost and can create diminishing returns.</li>
+                <li>Stop on PASS, high confidence, or after max attempts.</li>
+                <li>Final fallback should be <strong>abstain / insufficient evidence</strong>.</li>
+              </ul>
+            </article>
+
+            <article class="note-card searchable" data-search="simple chunk by words instead of sentence chunking for learning">
+              <h3>Doubt 4: Can You Chunk By Words for Simplicity?</h3>
+              <ul>
+                <li><strong>Yes</strong>, for learning and demos.</li>
+                <li>Word-based chunks are easy to explain and implement.</li>
+                <li>Tradeoff: may split sentences and reduce semantic coherence.</li>
+                <li>For production, sentence/semantic chunking usually performs better.</li>
+              </ul>
+            </article>
+          </div>
+
+          <details class="deep-card searchable" open data-search="retriever verifier agent tool llm hybrid verification methods">
+            <summary>Retriever vs Verifier: Agent or Tool?</summary>
+            <div class="deep-content">
+              <p><strong>Short answer:</strong> both are valid; use the simplest thing that works.</p>
+              <ul>
+                <li><strong>Retriever</strong> is usually a tool-backed component (embed query, search vector DB, rank chunks).</li>
+                <li><strong>Verifier</strong> can be:
+                  <ul>
+                    <li>Tool-based (string/span match, quote-check, source overlap, schema checks)</li>
+                    <li>LLM-as-judge (semantic support check)</li>
+                    <li>Hybrid (tool first, LLM only when uncertain)</li>
+                  </ul>
+                </li>
+              </ul>
+              <p>
+                In interview framing, emphasize that "agent" is orchestration behavior; the actual
+                verification signal may still come from deterministic tools for cost and reliability.
+              </p>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="rag loop flow retrieve augment generate verify retry bounded loop">
+            <summary>RAG Loop You Can Explain Clearly (Interview Script)</summary>
+            <div class="deep-content">
+              <div class="diagram mono">
+User Question
+  -> Encode Question
+  -> Retrieve Top-K Chunks (vector search)
+  -> Augment Prompt with Retrieved Context
+  -> Generate Answer (LLM)
+  -> Verify Answer Against Context
+      -> PASS: return answer
+      -> FAIL: rewrite query / broaden retrieval / retry (max N)
+  -> If still FAIL: abstain / return insufficient evidence
+              </div>
+              <p><strong>Key distinction:</strong> Verification usually checks support against retrieved context, not global truth.</p>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="where to add precision at k recall mrr hit rate relevance faithfulness metrics">
+            <summary>Where To Put Metrics (Retrieval vs Generation)</summary>
+            <div class="deep-content">
+              <h3 class="mini-head">Near Retrieval (Vector DB / Retriever Layer)</h3>
+              <ul>
+                <li><strong>Precision@K:</strong> fraction of retrieved chunks that are relevant.</li>
+                <li><strong>Recall@K:</strong> fraction of relevant chunks retrieved.</li>
+                <li><strong>MRR:</strong> rank quality of first relevant chunk.</li>
+                <li><strong>Hit Rate@K:</strong> did at least one relevant chunk appear?</li>
+              </ul>
+              <h3 class="mini-head">Near Generation / Verifier Layer</h3>
+              <ul>
+                <li><strong>Faithfulness / groundedness:</strong> answer supported by retrieved context.</li>
+                <li><strong>Answer relevance:</strong> answer addresses the user question.</li>
+                <li><strong>Abstention quality:</strong> abstains when evidence is insufficient.</li>
+                <li><strong>Retry efficiency:</strong> success rate by iteration count.</li>
+              </ul>
+              <p class="muted">Retrieval metrics diagnose search quality; generation metrics diagnose answer quality.</p>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="simple rag implementation chunk by words easy to explain">
+            <summary>Simple Version (Good for Learning / Explaining)</summary>
+            <div class="deep-content">
+              <ol>
+                <li>Chunk document by fixed word count (e.g., 50-100 words).</li>
+                <li>Embed each chunk and store in vector DB with chunk IDs.</li>
+                <li>Embed user question and retrieve top-K chunks.</li>
+                <li>Prompt LLM: answer from context only (or abstain).</li>
+                <li>Verify answer with simple tool checks, optionally LLM judge.</li>
+                <li>Retry with query rewrite up to max 2-3 times.</li>
+              </ol>
+              <p>
+                This version is easier to explain than a fully agentic graph and is a good teaching path.
+              </p>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="rag interview talking points agentic verification hybrid verifier">
+            <summary>How To Explain Your RAG System In Interview (30-45 sec)</summary>
+            <div class="deep-content">
+              <p>
+                I built a RAG pipeline with a bounded retrieve-generate-verify loop. The retriever
+                embeds the question and fetches top-K chunks from a vector database. The LLM answers
+                using only retrieved context. Then a verifier checks if the answer is supported by
+                that context, using tool-based checks first and optionally an LLM judge for nuanced
+                cases. If verification fails, the system rewrites the query and retries retrieval up
+                to a fixed max iteration count. I track retrieval metrics like Precision@K/Recall@K/MRR
+                and answer-level metrics like faithfulness and relevance.
+              </p>
+            </div>
+          </details>
+        </section>
+
+        <section id="transformer" class="panel">
+          <div class="section-head">
+            <p class="eyebrow">Section 8</p>
+            <h2>Transformer Architecture Quick Reference</h2>
+            <p>Few-lines explanation plus interview-ready depth.</p>
+          </div>
+
+          <div class="cards two-col">
+            <article class="note-card searchable" data-search="transformer few lines summary self attention parallel context">
+              <h3>Few-Line Answer</h3>
+              <p>
+                A transformer uses self-attention so each token can weigh other tokens in the
+                sequence and build contextual meaning in parallel. Each layer combines multi-head
+                attention, residual connections, layer normalization, and a feed-forward network.
+                Repeating these blocks builds rich representations for next-token prediction or
+                understanding tasks.
+              </p>
+            </article>
+
+            <article class="note-card searchable" data-search="gpt decoder only transformer masked attention">
+              <h3>GPT-Style (Decoder-Only)</h3>
+              <ul>
+                <li>Masked self-attention (can only attend to previous tokens).</li>
+                <li>Autoregressive next-token prediction.</li>
+                <li>Stacked transformer blocks + final linear head + softmax.</li>
+                <li>This is the right framing for your GPT-style transformer project.</li>
+              </ul>
+            </article>
+          </div>
+
+          <details class="deep-card searchable" open data-search="transformer block diagram attention q k v add norm ffn">
+            <summary>Block Diagram (Text Form)</summary>
+            <div class="deep-content">
+              <div class="diagram mono">
+Input Tokens
+  -> Token Embeddings + Positional Encoding
+  -> [Transformer Block] x N
+      -> Multi-Head Self-Attention (Q, K, V)
+      -> Add + LayerNorm
+      -> Feed-Forward Network (MLP)
+      -> Add + LayerNorm
+  -> Linear Projection to Vocab Logits
+  -> Softmax (for token probabilities)
+              </div>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="self attention formula q k v scaled dot product">
+            <summary>Self-Attention Math (What To Say, Not Derive Fully)</summary>
+            <div class="deep-content">
+              <div class="code-block">
+                <pre><code>Q = XWq,  K = XWk,  V = XWv
+Attention(Q,K,V) = softmax(QK^T / sqrt(dk)) V</code></pre>
+              </div>
+              <ul>
+                <li><strong>Query</strong>: what this token is looking for.</li>
+                <li><strong>Key</strong>: what each token offers for matching.</li>
+                <li><strong>Value</strong>: information passed forward if attended to.</li>
+                <li><strong>Scaling by sqrt(dk)</strong> stabilizes training.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="multi head attention why multiple heads">
+            <summary>Why Multi-Head Attention?</summary>
+            <div class="deep-content">
+              <p>
+                Multiple heads let the model learn different relationship patterns in parallel
+                (syntax, local dependencies, long-range references, semantic role cues).
+              </p>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="positional encoding why transformer needs order">
+            <summary>Why Positional Encoding?</summary>
+            <div class="deep-content">
+              <p>
+                Attention itself is permutation-invariant, so token order must be injected (via
+                sinusoidal or learned positional embeddings) to represent sequence position.
+              </p>
+            </div>
+          </details>
+
+          <details class="deep-card searchable" data-search="transformer interview answer project from scratch 15m parameters">
+            <summary>How To Describe Your Transformer Project (Interview)</summary>
+            <div class="deep-content">
+              <p>
+                I implemented a decoder-only GPT-style transformer from scratch to understand the
+                architecture beyond API-level usage. The core elements I implemented included masked
+                self-attention, positional embeddings, stacked transformer blocks with residuals and
+                layer norm, and a training loop for autoregressive next-token prediction. The project
+                helped me build intuition for compute/memory tradeoffs and model training behavior.
+              </p>
+            </div>
+          </details>
+        </section>
+
+        <section id="practice" class="panel">
+          <div class="section-head">
+            <p class="eyebrow">Section 9</p>
+            <h2>Practice Questions (Behavioral + Technical)</h2>
+            <p>Use these prompts to rehearse concise, structured answers.</p>
+          </div>
+
+          <div class="cards two-col">
+            <details class="deep-card searchable" open data-search="behavioral interview questions collaboration learning conflict">
+              <summary>Behavioral Questions They May Ask</summary>
+              <div class="deep-content">
+                <ul>
+                  <li>Walk me through your API development experience.</li>
+                  <li>Tell me about a complex technical problem and how you solved it.</li>
+                  <li>Describe a time you worked cross-functionally with non-engineers/domain experts.</li>
+                  <li>How do you learn new technologies quickly?</li>
+                  <li>Tell me about a production incident or failure and what you changed afterward.</li>
+                  <li>How do you prioritize reliability vs feature delivery?</li>
+                </ul>
+                <p class="muted">Use STAR and include metrics + technical tradeoffs.</p>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="technical api design questions idempotency auth retry versioning">
+              <summary>Technical API Design Questions They May Ask</summary>
+              <div class="deep-content">
+                <ul>
+                  <li>How do you design a job submission API for long-running operations?</li>
+                  <li>How do you make job submission idempotent?</li>
+                  <li>When should the client retry, and when should it not?</li>
+                  <li>How do you version APIs and handle deprecation?</li>
+                  <li>What would your error response format look like?</li>
+                  <li>How would you authenticate and authorize researchers and service clients?</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="system design interview questions fr nfr scale availability tradeoffs">
+              <summary>System Design Questions They May Ask</summary>
+              <div class="deep-content">
+                <ul>
+                  <li>Design an API platform for researchers to submit and monitor HPC jobs.</li>
+                  <li>How do you scale status queries while preserving quota correctness?</li>
+                  <li>How do you handle scheduler downtime gracefully?</li>
+                  <li>How do you monitor and debug failures across API -> workflow -> scheduler layers?</li>
+                  <li>What metrics and SLOs would you track?</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="deep-card searchable" data-search="rag questions embedding vectorization verifier retriever evaluation">
+              <summary>RAG / LLM Questions You Can Handle</summary>
+              <div class="deep-content">
+                <ul>
+                  <li>Explain embeddings vs vectorization.</li>
+                  <li>How does retrieval actually work in a vector DB?</li>
+                  <li>How do you verify generated answers are correct/grounded?</li>
+                  <li>Why not just trust the top-1 chunk?</li>
+                  <li>Where do Precision@K / Recall@K / MRR fit?</li>
+                  <li>Why use a bounded retry loop?</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
+          <details class="deep-card searchable" data-search="questions to ask interviewer team onboarding success metrics nersc">
+            <summary>Questions To Ask Them (Strong Signals)</summary>
+            <div class="deep-content">
+              <ul>
+                <li>What projects would this role likely own in the first 3-6 months?</li>
+                <li>How do software engineers and systems engineers collaborate day-to-day?</li>
+                <li>What are the biggest pain points for API users today?</li>
+                <li>How do you balance new features with reliability and operational hardening?</li>
+                <li>What does success look like for this role after 6 months?</li>
+                <li>How do you measure impact of the APIs/services built by this team?</li>
+              </ul>
+            </div>
+          </details>
+        </section>
+
+        <section id="final-check" class="panel">
+          <div class="section-head">
+            <p class="eyebrow">Section 10</p>
+            <h2>Final Checklist (Day Before + Day Of)</h2>
+            <p>Use this as your last pass before joining the interview.</p>
+          </div>
+
+          <div class="cards two-col">
+            <article class="note-card searchable" data-search="day before interview checklist">
+              <h3>Day Before</h3>
+              <ul>
+                <li>Review 3-4 STAR stories and memorize metrics.</li>
+                <li>Rehearse 60-second intro and 30-second "Why NERSC".</li>
+                <li>Review API design sheet (contract, idempotency, retries, errors, versioning).</li>
+                <li>Review FR/NFR structure + 1 capacity estimation template.</li>
+                <li>Scan NERSC public API docs again and note 2-3 observations/questions.</li>
+                <li>Prepare interviewer questions in writing.</li>
+              </ul>
+            </article>
+
+            <article class="note-card searchable" data-search="day of interview checklist logistics">
+              <h3>Day Of</h3>
+              <ul>
+                <li>Have resume and job description open.</li>
+                <li>Keep this notes page open in another tab/window.</li>
+                <li>Join 5-10 minutes early and test audio/video.</li>
+                <li>Keep water, notebook, and pen ready.</li>
+                <li>Answer with structure; do not rush to implementation before clarifying requirements.</li>
+              </ul>
+            </article>
+
+            <article class="note-card searchable" data-search="do not say pitfalls interview mistakes">
+              <h3>Avoid These Interview Mistakes</h3>
+              <ul>
+                <li>Claiming HPC expertise you do not have.</li>
+                <li>Giving architecture without clarifying FR/NFR.</li>
+                <li>Talking only about model/AI and ignoring reliability/operations.</li>
+                <li>Ignoring failure modes, retries, and observability.</li>
+                <li>Overly long answers without metrics or outcomes.</li>
+              </ul>
+            </article>
+
+            <article class="note-card searchable" data-search="closing statement end of interview">
+              <h3>Closing Statement (Optional)</h3>
+              <p>
+                Thank you for the conversation. This role is a strong fit with my API and automation
+                experience, and I am especially motivated by the chance to apply those skills to
+                infrastructure that supports scientific research at scale.
+              </p>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="footer">
+      <p>
+        Built as a local review page for interview prep. Use search, expand/collapse, and dense mode
+        to skim quickly.
+      </p>
+      <a href="#top">Back to top</a>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
